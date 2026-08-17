@@ -50,7 +50,7 @@ export class YouTubeProvider extends Provider {
       };
     } catch (err) {
       console.error('[YouTubeProvider Analyze Error]', err.stack || err.message);
-      throw new Error('Failed to analyze YouTube metadata. Verify the URL is public and valid.');
+      throw new Error(`Failed to analyze YouTube metadata. ${err.message || ''}`);
     }
   }
 
