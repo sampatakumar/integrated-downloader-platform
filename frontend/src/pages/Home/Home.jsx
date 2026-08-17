@@ -176,6 +176,7 @@ export default function Home({ onQueueJob }) {
                   src={metadata.thumbnail} 
                   alt="Video thumbnail" 
                   className="metadata-thumbnail" 
+                  referrerPolicy="no-referrer"
                 />
               ) : (
                 <div className="metadata-thumbnail-placeholder">
