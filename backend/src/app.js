@@ -25,12 +25,18 @@ app.use(cors({
   origin: (origin, callback) => {
     // Allow requests with no origin (like mobile apps or curl)
     if (!origin) return callback(null, true);
-    if (allowedOrigins.includes(origin)) return callback(null, true);
     
-    // Dynamic matching to support Vercel preview deployment URLs
-    if (origin.startsWith('https://media-flowyt') && origin.endsWith('.vercel.app')) {
-      return callback(null, true);
+    // Always allow localhost and 127.0.0.1 loopback requests on any port
+    try {
+      const hostname = new URL(origin).hostname;
+      if (hostname === 'localhost' || hostname === '127.0.0.1') {
+        return callback(null, true);
+      }
+    } catch (e) {
+      // Ignored
     }
+
+    if (allowedOrigins.includes(origin)) return callback(null, true);
     
     callback(new Error('Not allowed by CORS'));
   },
