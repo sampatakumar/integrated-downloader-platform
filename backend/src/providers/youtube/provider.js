@@ -22,14 +22,18 @@ export class YouTubeProvider extends Provider {
   async analyze(url) {
     try {
       // Execute yt-dlp to retrieve video info
-      const info = await pkg(url, {
+      const options = {
         dumpSingleJson: true,
         noWarnings: true,
         noCheckCertificates: true,
         jsRuntimes: 'node',
-        extractorArgs: 'youtube:player_client=web_embedded,web,tv',
+        extractorArgs: 'youtube:player_client=ios',
         forceIpv4: true,
-      });
+      };
+      if (process.env.PROXY_URL) {
+        options.proxy = process.env.PROXY_URL;
+      }
+      const info = await pkg(url, options);
 
       return {
         title: info.title || 'YouTube Video',
@@ -70,9 +74,12 @@ export class YouTubeProvider extends Provider {
           noWarnings: true,
           noCheckCertificates: true,
           jsRuntimes: 'node',
-          extractorArgs: 'youtube:player_client=web_embedded,web,tv',
+          extractorArgs: 'youtube:player_client=ios',
           forceIpv4: true,
         };
+        if (process.env.PROXY_URL) {
+          flags.proxy = process.env.PROXY_URL;
+        }
 
         if (format === 'mp3') {
           const kbps = quality.replace(/kbps|\s/g, '');

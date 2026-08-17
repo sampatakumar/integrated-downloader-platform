@@ -28,13 +28,17 @@ class YtDlpProvider extends Provider {
   async analyze(url) {
     try {
       // Fetch metadata from yt-dlp
-      const info = await pkg(url, {
+      const options = {
         dumpSingleJson: true,
         noWarnings: true,
         noCheckCertificates: true,
         jsRuntimes: 'node',
         forceIpv4: true,
-      });
+      };
+      if (process.env.PROXY_URL) {
+        options.proxy = process.env.PROXY_URL;
+      }
+      const info = await pkg(url, options);
 
       return {
         title: info.title || `${this.sourceName} Media`,
@@ -74,6 +78,9 @@ class YtDlpProvider extends Provider {
           jsRuntimes: 'node',
           forceIpv4: true,
         };
+        if (process.env.PROXY_URL) {
+          flags.proxy = process.env.PROXY_URL;
+        }
 
         if (format === 'mp3') {
           const kbps = quality.replace(/kbps|\s/g, '');
