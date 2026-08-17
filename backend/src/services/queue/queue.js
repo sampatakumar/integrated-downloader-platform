@@ -239,3 +239,19 @@ function cleanJobDirectory(jobId) {
   }
 }
 export default { createJob, getJob, cancelJob, retryJob, addSseClient, removeSseClient };
+
+/**
+ * Returns basic queue metrics for health checks.
+ */
+export function getQueueStats() {
+  const total = jobs.size;
+  let queued = 0, downloading = 0, completed = 0, failed = 0, cancelled = 0;
+  for (const j of jobs.values()) {
+    if (j.status === 'queued') queued++;
+    else if (j.status === 'downloading') downloading++;
+    else if (j.status === 'completed') completed++;
+    else if (j.status === 'failed') failed++;
+    else if (j.status === 'cancelled') cancelled++;
+  }
+  return { total, queued, downloading, completed, failed, cancelled, active: activeCount };
+}

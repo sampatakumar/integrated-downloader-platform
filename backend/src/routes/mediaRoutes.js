@@ -1,6 +1,7 @@
 import express from 'express';
 import fs from 'fs';
 import path from 'path';
+import os from 'os';
 import ssrfProtection from '../middleware/ssrf.js';
 import { getProvider, getSupportedProviders } from '../providers/registry.js';
 import {
@@ -9,14 +10,64 @@ import {
   cancelJob,
   retryJob,
   addSseClient,
-  removeSseClient
+  removeSseClient,
+  getQueueStats
 } from '../services/queue/queue.js';
+import ffmpegInstaller from '@ffmpeg-installer/ffmpeg';
 
 const router = express.Router();
 
-// Liveness check
+// Health endpoint with diagnostics
 router.get('/health', (req, res) => {
-  res.status(200).json({ status: 'OK', timestamp: new Date() });
+  try {
+    const tempRoot = path.resolve(__dirname, '../../../temp');
+    let tempStats = { exists: false, files: 0, sizeBytes: 0 };
+    if (fs.existsSync(tempRoot)) {
+      tempStats.exists = true;
+      const stack = [tempRoot];
+      while (stack.length) {
+        const cur = stack.pop();
+        const entries = fs.readdirSync(cur);
+        for (const e of entries) {
+          const full = path.join(cur, e);
+          try {
+            const st = fs.statSync(full);
+            if (st.isDirectory()) stack.push(full);
+            else if (st.isFile()) {
+              tempStats.files += 1;
+              tempStats.sizeBytes += st.size;
+            }
+          } catch (err) {
+            // ignore individual file errors
+          }
+        }
+      }
+    }
+
+    const queue = getQueueStats();
+    const providers = getSupportedProviders();
+
+    const payload = {
+      status: 'OK',
+      timestamp: new Date(),
+      uptimeSeconds: process.uptime(),
+      node: process.version,
+      platform: os.platform(),
+      memory: process.memoryUsage(),
+      ffmpeg: {
+        path: ffmpegInstaller.path || null,
+        exists: fs.existsSync(ffmpegInstaller.path)
+      },
+      temp: tempStats,
+      queue,
+      providers: { count: providers.length }
+    };
+
+    res.status(200).json(payload);
+  } catch (err) {
+    console.error('[Health] Error while gathering health info:', err);
+    res.status(500).json({ status: 'ERROR', error: err.message });
+  }
 });
 
 // List supported providers
