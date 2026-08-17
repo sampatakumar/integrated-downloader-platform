@@ -1,4 +1,4 @@
-import { getStreamUrl } from './api.js';
+import { getStreamUrl, getProgressUrl } from './api.js';
 import { addHistoryItem } from './historyDB.js';
 
 /**
@@ -12,7 +12,7 @@ import { addHistoryItem } from './historyDB.js';
  * @returns {function} Cleanup function to unsubscribe.
  */
 export function subscribeToProgress(jobId, originalUrl, onUpdate, onError) {
-  const eventSource = new EventSource(`http://localhost:5000/api/downloads/${jobId}/progress`);
+  const eventSource = new EventSource(getProgressUrl(jobId));
 
   eventSource.onmessage = async (event) => {
     try {

@@ -76,3 +76,7 @@ export async function retryDownloadJob(jobId) {
 export function getStreamUrl(jobId) {
   return `${API_BASE}/downloads/${jobId}/stream`;
 }
+
+export function getProgressUrl(jobId) {
+  return `${API_BASE}/downloads/${jobId}/progress`;
+}
