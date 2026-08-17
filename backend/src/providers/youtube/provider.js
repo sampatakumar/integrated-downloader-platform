@@ -27,6 +27,8 @@ export class YouTubeProvider extends Provider {
         noWarnings: true,
         noCheckCertificates: true,
         jsRuntimes: 'node',
+        extractorArgs: 'youtube:player_client=web_embedded,web,tv',
+        forceIpv4: true,
       });
 
       return {
@@ -68,6 +70,8 @@ export class YouTubeProvider extends Provider {
           noWarnings: true,
           noCheckCertificates: true,
           jsRuntimes: 'node',
+          extractorArgs: 'youtube:player_client=web_embedded,web,tv',
+          forceIpv4: true,
         };
 
         if (format === 'mp3') {

@@ -33,6 +33,7 @@ class YtDlpProvider extends Provider {
         noWarnings: true,
         noCheckCertificates: true,
         jsRuntimes: 'node',
+        forceIpv4: true,
       });
 
       return {
@@ -71,6 +72,7 @@ class YtDlpProvider extends Provider {
           noWarnings: true,
           noCheckCertificates: true,
           jsRuntimes: 'node',
+          forceIpv4: true,
         };
 
         if (format === 'mp3') {
