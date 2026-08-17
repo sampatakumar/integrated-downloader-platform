@@ -65,7 +65,8 @@ router.get('/health', (req, res) => {
       },
       temp: tempStats,
       queue,
-      providers: { count: providers.length }
+      providers: { count: providers.length },
+      ytDlpUpdateStatus: global.ytDlpUpdateStatus || null
     };
 
     res.status(200).json(payload);
