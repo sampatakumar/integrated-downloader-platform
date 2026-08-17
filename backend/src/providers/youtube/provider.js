@@ -27,7 +27,7 @@ export class YouTubeProvider extends Provider {
         noWarnings: true,
         noCheckCertificates: true,
         jsRuntimes: 'node',
-        extractorArgs: 'youtube:player_client=ios',
+        extractorArgs: 'youtube:player_client=ios,web_embedded,web,tv',
         forceIpv4: true,
       };
       if (process.env.PROXY_URL) {
@@ -74,7 +74,7 @@ export class YouTubeProvider extends Provider {
           noWarnings: true,
           noCheckCertificates: true,
           jsRuntimes: 'node',
-          extractorArgs: 'youtube:player_client=ios',
+          extractorArgs: 'youtube:player_client=ios,web_embedded,web,tv',
           forceIpv4: true,
         };
         if (process.env.PROXY_URL) {
