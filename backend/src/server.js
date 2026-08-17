@@ -11,7 +11,8 @@ import { execSync } from 'child_process';
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-// Load dotenv from root
+// Load dotenv configuration (prioritizing backend/.env, falling back to root .env)
+dotenv.config({ path: path.resolve(__dirname, '../.env') });
 dotenv.config({ path: path.resolve(__dirname, '../../.env') });
 
 // Run youtube-dl-exec postinstall to pull the latest yt-dlp binary on boot
