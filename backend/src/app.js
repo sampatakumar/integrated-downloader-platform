@@ -25,6 +25,12 @@ app.use(cors({
     // Allow requests with no origin (like mobile apps or curl)
     if (!origin) return callback(null, true);
     if (allowedOrigins.includes(origin)) return callback(null, true);
+    
+    // Dynamic matching to support Vercel preview deployment URLs
+    if (origin.startsWith('https://media-flowyt') && origin.endsWith('.vercel.app')) {
+      return callback(null, true);
+    }
+    
     callback(new Error('Not allowed by CORS'));
   },
   credentials: true,
