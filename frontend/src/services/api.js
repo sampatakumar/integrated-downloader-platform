@@ -1,4 +1,5 @@
-const API_BASE = 'http://localhost:5000/api';
+const envBase = import.meta.env.VITE_API_BASE || 'http://localhost:5000';
+const API_BASE = (envBase.replace(/\/$/, '')) + '/api';
 
 /**
  * Helper to standardise HTTP error handling.
