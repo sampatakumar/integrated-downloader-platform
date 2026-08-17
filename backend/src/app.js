@@ -3,6 +3,7 @@ import cors from 'cors';
 import helmet from 'helmet';
 import rateLimit from 'express-rate-limit';
 import path from 'path';
+import fs from 'fs';
 import { fileURLToPath } from 'url';
 import mediaRoutes from './routes/mediaRoutes.js';
 
@@ -56,6 +57,19 @@ app.use('/api', mediaRoutes);
 
 // Serve Temp Files for direct downloading if necessary (fallback streaming is preferred, but route handles it)
 app.use('/temp', express.static(path.resolve(__dirname, '../temp')));
+
+// Serve static frontend files in production/standalone local mode
+const frontendDistPath = path.resolve(__dirname, '../../frontend/dist');
+if (fs.existsSync(frontendDistPath)) {
+  app.use(express.static(frontendDistPath));
+  // Handle client-side routing fallback for Single Page App
+  app.get('*', (req, res, next) => {
+    if (req.path.startsWith('/api') || req.path.startsWith('/temp')) {
+      return next();
+    }
+    res.sendFile(path.join(frontendDistPath, 'index.html'));
+  });
+}
 
 // 404 Route handler
 app.use((req, res) => {

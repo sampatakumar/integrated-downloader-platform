@@ -1,0 +1,13 @@
+[Unit]
+Description=MediaFlow Service (Single-Port Downloader on Port 8084)
+After=network.target
+
+[Service]
+Type=simple
+WorkingDirectory=/home/sampatakumar/D_drive/downloader
+ExecStart=/home/sampatakumar/.nvm/versions/node/v24.19.0/bin/node backend/src/server.js
+Restart=on-failure
+RestartSec=5
+
+[Install]
+WantedBy=default.target
