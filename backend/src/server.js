@@ -5,12 +5,24 @@ import ffmpegInstaller from '@ffmpeg-installer/ffmpeg';
 import app from './app.js';
 import { startCleanupWorker } from './services/cleanup/cleanup.js';
 
+import { execSync } from 'child_process';
+
 // Resolve directory paths for ESM
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 // Load dotenv from root
 dotenv.config({ path: path.resolve(__dirname, '../../.env') });
+
+// Run youtube-dl-exec postinstall to pull the latest yt-dlp binary on boot
+try {
+  console.log('[MediaFlow Init] Updating yt-dlp binary to the latest version...');
+  const postinstallPath = path.resolve(__dirname, '../node_modules/youtube-dl-exec/scripts/postinstall.js');
+  execSync(`node "${postinstallPath}"`, { stdio: 'inherit' });
+  console.log('[MediaFlow Init] yt-dlp binary updated successfully.');
+} catch (err) {
+  console.error('[MediaFlow Init] Failed to update yt-dlp binary on boot:', err.message);
+}
 
 // Inject static FFmpeg binary directory into the system PATH
 const ffmpegDir = path.dirname(ffmpegInstaller.path);
